@@ -4,48 +4,104 @@
     <meta charset="UTF-8">
     <title>Top 10 Movies</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #0d1117;
+            color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+        }
+        h1 {
+            font-weight: 700;
+        }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
         }
         .movie-card {
-            border-radius: 15px;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            background-color: #161b22;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .movie-card:hover {
+            transform: scale(1.03);
         }
         .movie-img {
             width: 100%;
+            height: 370px;
             object-fit: cover;
-            height: 400px;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .overlay h5 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .overlay p {
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        .overlay .btn {
+            margin-top: 10px;
+        }
+        .rank-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #e50914;
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.7);
+        }
+        .add-btn {
+            display: inline-block;
+            margin-bottom: 40px;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Top 10 Movies</h1>
-        <div class="d-flex justify-content-center mb-4">
-            <a href="{{ url_for('add') }}" class="btn btn-primary">+ Add Movie</a>
+        <h1 class="text-center mb-4">🎬 Top 10 Movies</h1>
+        <div class="text-center">
+            <a href="{{ url_for('add') }}" class="btn btn-danger btn-lg add-btn">+ Add Movie</a>
         </div>
-        {% for movie in movies %}
-        <div class="movie-card bg-white p-4">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <img src="{{ movie.img_url }}" alt="{{ movie.title }}" class="movie-img img-fluid rounded">
-                </div>
-                <div class="col-md-8">
-                    <h2>{{ movie.ranking }}. {{ movie.title }} ({{ movie.year }})</h2>
-                    <p><strong>Rating:</strong> {{ movie.rating }}</p>
-                    <p><strong>Review:</strong> {{ movie.review }}</p>
-                    <p>{{ movie.description }}</p>
+        {% if movies %}
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <div class="rank-badge">{{ movie.ranking }}</div>
+                <img src="{{ movie.img_url }}" alt="{{ movie.title }}" class="movie-img">
+                <div class="overlay">
+                    <h5>{{ movie.title }} ({{ movie.year }})</h5>
+                    <p>⭐ {{ movie.rating }}/10</p>
+                    <p>{{ movie.review }}</p>
                     <a href="{{ url_for('edit', movie_id=movie.id) }}" class="btn btn-sm btn-warning">Edit</a>
                     <a href="{{ url_for('delete', movie_id=movie.id) }}" class="btn btn-sm btn-danger">Delete</a>
                 </div>
             </div>
+            {% endfor %}
         </div>
         {% else %}
-        <p class="text-center">No movies yet. Click "Add Movie" to begin!</p>
-        {% endfor %}
+        <p class="text-center mt-5">No movies added yet. Click "Add Movie" to begin!</p>
+        {% endif %}
     </div>
 </body>
 </html>
