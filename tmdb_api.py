@@ -2,11 +2,10 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Load API key from .env
+# Load API key
 load_dotenv()
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
-# Base URLs
 TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie"
 TMDB_MOVIE_DETAILS_URL = "https://api.themoviedb.org/3/movie"
 
@@ -43,5 +42,11 @@ def get_movie_details(tmdb_id):
     response = requests.get(url, params=params)
     response.raise_for_status()
     movie_data = response.json()
+
     movie_data["trailer_url"] = get_movie_trailer(tmdb_id)
+
+    genres = movie_data.get("genres", [])
+    genre_names = [g["name"] for g in genres]
+    movie_data["genre_names"] = ", ".join(genre_names)
+
     return movie_data

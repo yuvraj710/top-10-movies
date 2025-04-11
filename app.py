@@ -26,6 +26,7 @@ class Movie(db.Model):
     review = db.Column(db.String(500), nullable=True)
     img_url = db.Column(db.String(500), nullable=True)
     trailer_url = db.Column(db.String(500), nullable=True)
+    genres = db.Column(db.String(250), nullable=True)  # New field
 
 with app.app_context():
     db.create_all()
@@ -63,7 +64,8 @@ def add_movie(tmdb_id):
         year=movie_data["release_date"].split("-")[0] if movie_data["release_date"] else "N/A",
         description=movie_data["overview"],
         img_url=f"https://image.tmdb.org/t/p/w500{movie_data['poster_path']}" if movie_data.get("poster_path") else "",
-        trailer_url=movie_data.get("trailer_url")
+        trailer_url=movie_data.get("trailer_url"),
+        genres=movie_data.get("genre_names")
     )
     db.session.add(new_movie)
     db.session.commit()
@@ -86,7 +88,6 @@ def delete(movie_id):
     db.session.commit()
     return redirect(url_for("home"))
 
-# Jinja filter: visual stars with gold and gray using <i> tags
 @app.template_filter("stars")
 def stars_filter(rating):
     if rating is None:
