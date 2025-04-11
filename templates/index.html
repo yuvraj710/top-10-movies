@@ -53,7 +53,7 @@
             margin: 5px 0;
         }
         .overlay .btn {
-            margin-top: 10px;
+            margin: 5px 4px 0 0;
         }
         .rank-badge {
             position: absolute;
@@ -83,6 +83,7 @@
         <div class="text-center">
             <a href="{{ url_for('add') }}" class="btn btn-danger btn-lg add-btn">+ Add Movie</a>
         </div>
+
         {% if movies %}
         <div class="movie-grid">
             {% for movie in movies %}
@@ -93,6 +94,9 @@
                     <h5>{{ movie.title }} ({{ movie.year }})</h5>
                     <p>⭐ {{ movie.rating }}/10</p>
                     <p>{{ movie.review }}</p>
+                    {% if movie.trailer_url %}
+                        <a href="{{ movie.trailer_url }}" class="btn btn-sm btn-outline-light" target="_blank">🎬 Watch Trailer</a>
+                    {% endif %}
                     <a href="{{ url_for('edit', movie_id=movie.id) }}" class="btn btn-sm btn-warning">Edit</a>
                     <a href="{{ url_for('delete', movie_id=movie.id) }}" class="btn btn-sm btn-danger">Delete</a>
                 </div>
