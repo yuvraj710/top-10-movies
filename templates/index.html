@@ -99,10 +99,10 @@
             <a href="{{ url_for('add') }}" class="btn btn-danger btn-lg add-btn">+ Add Movie</a>
         </div>
 
-        <!-- Genre Filter Dropdown -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <form method="get" action="{{ url_for('home') }}">
-                <div class="input-group">
+        <!-- Genre + Search Filters -->
+        <div class="row align-items-center mb-4">
+            <div class="col-md-6">
+                <form method="get" action="{{ url_for('home') }}" class="d-flex">
                     <label class="input-group-text bg-dark text-white border-secondary" for="genre-select">Filter by Genre:</label>
                     <select class="form-select bg-dark text-white border-secondary" id="genre-select" name="genre" onchange="this.form.submit()">
                         <option {% if not selected_genre or selected_genre == 'All' %}selected{% endif %}>All</option>
@@ -110,17 +110,28 @@
                             <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>{{ genre }}</option>
                         {% endfor %}
                     </select>
-                </div>
-            </form>
-
-            {% if selected_genre and selected_genre != 'All' %}
-                <div class="ms-3">
-                    <span class="text-info">Now showing: <strong>{{ selected_genre }}</strong></span>
-                    <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-light ms-2">Clear Filter</a>
-                </div>
-            {% endif %}
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form method="get" action="{{ url_for('home') }}" class="d-flex justify-content-end">
+                    <input type="hidden" name="genre" value="{{ selected_genre }}">
+                    <input class="form-control bg-dark text-white border-secondary me-2" type="search" name="search" placeholder="Search titles..." value="{{ search_query or '' }}">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
         </div>
 
+        <!-- Active Filters Display -->
+        {% if selected_genre or search_query %}
+        <div class="mb-3 text-info">
+            <strong>Now showing:</strong>
+            {% if selected_genre and selected_genre != 'All' %}<span>Genre: <strong>{{ selected_genre }}</strong></span>{% endif %}
+            {% if search_query %}<span> | Search: “<strong>{{ search_query }}</strong>”</span>{% endif %}
+            <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-light ms-2">Clear All</a>
+        </div>
+        {% endif %}
+
+        <!-- Movie Grid -->
         {% if movies %}
         <div class="movie-grid">
             {% for movie in movies %}
@@ -129,21 +140,16 @@
                 <img src="{{ movie.img_url }}" alt="{{ movie.title }}" class="movie-img">
                 <div class="overlay">
                     <h5>{{ movie.title }} ({{ movie.year }})</h5>
-
-                    <!-- Genre Badges -->
                     <div class="mb-2">
                         {% for genre in movie.genres.split(',') %}
                             <span class="badge bg-secondary me-1">{{ genre.strip() }}</span>
                         {% endfor %}
                     </div>
-
                     <p class="stars">
                         {{ movie.rating|stars|safe }}
                         <span>({{ movie.rating }}/10)</span>
                     </p>
-
                     <p>{{ movie.review }}</p>
-
                     {% if movie.trailer_url %}
                         <a href="{{ movie.trailer_url }}" class="btn btn-sm btn-outline-light" target="_blank">🎬 Watch Trailer</a>
                     {% endif %}
@@ -154,7 +160,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-center mt-5">No movies added yet. Click "Add Movie" to begin!</p>
+        <p class="text-center mt-5">No movies found. Try a different filter or search term.</p>
         {% endif %}
     </div>
 </body>

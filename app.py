@@ -34,17 +34,23 @@ with app.app_context():
 @app.route("/")
 def home():
     selected_genre = request.args.get("genre")
+    search_query = request.args.get("search")
+
+    query = Movie.query
 
     if selected_genre and selected_genre != "All":
-        all_movies = Movie.query.filter(Movie.genres.ilike(f"%{selected_genre}%")).order_by(Movie.rating.desc()).all()
-    else:
-        all_movies = Movie.query.order_by(Movie.rating.desc()).all()
+        query = query.filter(Movie.genres.ilike(f"%{selected_genre}%"))
+
+    if search_query:
+        query = query.filter(Movie.title.ilike(f"%{search_query}%"))
+
+    all_movies = query.order_by(Movie.rating.desc()).all()
 
     for i, movie in enumerate(all_movies):
         movie.ranking = i + 1
     db.session.commit()
 
-    # Build list of all unique genres
+    # Build genre dropdown list
     genre_set = set()
     for movie in Movie.query.all():
         if movie.genres:
@@ -53,7 +59,10 @@ def home():
 
     genre_list = sorted(genre_set)
 
-    return render_template("index.html", movies=all_movies, selected_genre=selected_genre, all_genres=genre_list)
+    return render_template("index.html", movies=all_movies,
+                           selected_genre=selected_genre,
+                           search_query=search_query,
+                           all_genres=genre_list)
 
 @app.route("/add")
 def add():
