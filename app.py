@@ -26,18 +26,34 @@ class Movie(db.Model):
     review = db.Column(db.String(500), nullable=True)
     img_url = db.Column(db.String(500), nullable=True)
     trailer_url = db.Column(db.String(500), nullable=True)
-    genres = db.Column(db.String(250), nullable=True)  # New field
+    genres = db.Column(db.String(250), nullable=True)
 
 with app.app_context():
     db.create_all()
 
 @app.route("/")
 def home():
-    all_movies = Movie.query.order_by(Movie.rating.desc()).all()
+    selected_genre = request.args.get("genre")
+
+    if selected_genre and selected_genre != "All":
+        all_movies = Movie.query.filter(Movie.genres.ilike(f"%{selected_genre}%")).order_by(Movie.rating.desc()).all()
+    else:
+        all_movies = Movie.query.order_by(Movie.rating.desc()).all()
+
     for i, movie in enumerate(all_movies):
         movie.ranking = i + 1
     db.session.commit()
-    return render_template("index.html", movies=all_movies)
+
+    # Build list of all unique genres
+    genre_set = set()
+    for movie in Movie.query.all():
+        if movie.genres:
+            genre_list = [g.strip() for g in movie.genres.split(",")]
+            genre_set.update(genre_list)
+
+    genre_list = sorted(genre_set)
+
+    return render_template("index.html", movies=all_movies, selected_genre=selected_genre, all_genres=genre_list)
 
 @app.route("/add")
 def add():
