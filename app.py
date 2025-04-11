@@ -86,5 +86,19 @@ def delete(movie_id):
     db.session.commit()
     return redirect(url_for("home"))
 
+# Jinja filter: visual stars with gold and gray using <i> tags
+@app.template_filter("stars")
+def stars_filter(rating):
+    if rating is None:
+        return ""
+    rounded = round(rating / 2)
+    stars_html = ""
+    for i in range(5):
+        if i < rounded:
+            stars_html += '<i class="star full">★</i>'
+        else:
+            stars_html += '<i class="star empty">☆</i>'
+    return stars_html
+
 if __name__ == '__main__':
     app.run(debug=True)
