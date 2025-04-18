@@ -1,10 +1,23 @@
+<!--
+edit.html – Form page to rate and review a movie.
+
+This page is rendered when a user selects a movie to update.
+Uses Flask-WTF to handle the form with validation and CSRF protection.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Edit {{ movie.title }}</title>
+
+    <!-- Bootstrap for layout/styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom dark theme styling -->
     <style>
         body {
             background-color: #0d1117;
@@ -38,23 +51,43 @@
             background-color: #30363d;
             border: none;
         }
+        .text-error {
+            color: #ff6b6b;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h2 class="text-center mb-4">✏️ Rate & Review: <br><strong>{{ movie.title }}</strong></h2>
+        <!-- Page heading with movie title -->
+        <h2 class="text-center mb-4"> Rate & Review: <br><strong>{{ movie.title }}</strong></h2>
+        
+        <!-- Flask-WTF Form -->
         <form method="POST">
+            {{ form.csrf_token }}  <!-- CSRF protection -->
+
+            <!-- Rating input field -->
             <div class="mb-3">
-                <label for="rating" class="form-label">Rating (0–10)</label>
-                <input type="number" class="form-control" id="rating" name="rating" min="0" max="10" step="0.1" required value="{{ movie.rating or '' }}">
+                {{ form.rating.label(class="form-label") }}
+                {{ form.rating(class="form-control") }}
+                {% if form.rating.errors %}
+                    <div class="text-error">{{ form.rating.errors[0] }}</div>
+                {% endif %}
             </div>
+
+            <!-- Review textarea -->
             <div class="mb-3">
-                <label for="review" class="form-label">Your Review</label>
-                <textarea class="form-control" id="review" name="review" rows="4" required>{{ movie.review or '' }}</textarea>
+                {{ form.review.label(class="form-label") }}
+                {{ form.review(class="form-control", rows="4") }}
+                {% if form.review.errors %}
+                    <div class="text-error">{{ form.review.errors[0] }}</div>
+                {% endif %}
             </div>
+
+            <!-- Submit and cancel buttons -->
             <div class="d-flex justify-content-between">
                 <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save</button>
+                {{ form.submit(class="btn btn-primary") }}
             </div>
         </form>
     </div>

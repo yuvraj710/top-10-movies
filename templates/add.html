@@ -1,10 +1,23 @@
+<!--
+add.html – Search page for adding a new movie.
+
+This form lets the user search for a movie by title using TMDb.
+Results are displayed on select.html for final confirmation.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Search for a Movie</title>
+
+    <!-- Bootstrap for layout/styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom dark theme styling -->
     <style>
         body {
             background-color: #0d1117;
@@ -42,11 +55,18 @@
 </head>
 <body>
     <div class="form-container">
-        <h2 class="text-center mb-4">🔍 Search for a Movie</h2>
+        <!-- Page heading -->
+        <h2 class="text-center mb-4"> Search for a Movie</h2>
+
+        <!-- Simple GET form that queries TMDb by title -->
         <form method="GET" action="{{ url_for('find_movie') }}">
+            <!-- Input field for movie title -->
             <div class="mb-3">
-                <input type="text" class="form-control" name="title" placeholder="e.g. Inception" required>
+                <label for="title" class="form-label visually-hidden">Movie Title</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="e.g. Inception" required>
             </div>
+
+            <!-- Buttons: cancel returns to home, submit searches -->
             <div class="d-flex justify-content-between">
                 <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Search</button>

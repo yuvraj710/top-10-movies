@@ -1,4 +1,14 @@
+# Ignore Python virtual environment
 venv/
+
+# Ignore Python cache files
 __pycache__/
+
+# Ignore environment variables and secrets
 .env
+
+# Ignore local database file
 *.db
+
+# Ignore editor-specific settings (optional)
+.vscode/

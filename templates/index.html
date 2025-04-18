@@ -1,10 +1,26 @@
+<!--
+index.html – Homepage of the Top 10 Movies web app.
+
+Displays all added movies, sorted by rating. Includes:
+- Genre filter dropdown
+- Title search bar
+- Movie cards with ratings, reviews, genre badges, and trailers
+- Options to edit, delete, or add new movies
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Top 10 Movies</title>
+
+    <!-- Bootstrap for layout/styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom dark theme styling -->
     <style>
         body {
             background-color: #0d1117;
@@ -94,13 +110,17 @@
 </head>
 <body>
     <div class="container mt-5">
+        <!-- Header -->
         <h1 class="text-center mb-4">🎬 Top 10 Movies</h1>
+
+        <!-- Add Movie Button -->
         <div class="text-center">
             <a href="{{ url_for('add') }}" class="btn btn-danger btn-lg add-btn">+ Add Movie</a>
         </div>
 
-        <!-- Genre + Search Filters -->
+        <!-- Filters: Genre + Search -->
         <div class="row align-items-center mb-4">
+            <!-- Genre dropdown -->
             <div class="col-md-6">
                 <form method="get" action="{{ url_for('home') }}" class="d-flex">
                     <label class="input-group-text bg-dark text-white border-secondary" for="genre-select">Filter by Genre:</label>
@@ -112,6 +132,8 @@
                     </select>
                 </form>
             </div>
+
+            <!-- Search bar -->
             <div class="col-md-6">
                 <form method="get" action="{{ url_for('home') }}" class="d-flex justify-content-end">
                     <input type="hidden" name="genre" value="{{ selected_genre }}">
@@ -121,12 +143,16 @@
             </div>
         </div>
 
-        <!-- Active Filters Display -->
+        <!-- Filter feedback -->
         {% if selected_genre or search_query %}
         <div class="mb-3 text-info">
             <strong>Now showing:</strong>
-            {% if selected_genre and selected_genre != 'All' %}<span>Genre: <strong>{{ selected_genre }}</strong></span>{% endif %}
-            {% if search_query %}<span> | Search: “<strong>{{ search_query }}</strong>”</span>{% endif %}
+            {% if selected_genre and selected_genre != 'All' %}
+                <span>Genre: <strong>{{ selected_genre }}</strong></span>
+            {% endif %}
+            {% if search_query %}
+                <span> | Search: “<strong>{{ search_query }}</strong>”</span>
+            {% endif %}
             <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-light ms-2">Clear All</a>
         </div>
         {% endif %}
@@ -160,6 +186,7 @@
             {% endfor %}
         </div>
         {% else %}
+        <!-- No results fallback -->
         <p class="text-center mt-5">No movies found. Try a different filter or search term.</p>
         {% endif %}
     </div>
