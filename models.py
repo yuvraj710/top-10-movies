@@ -1,18 +1,8 @@
-"""
-models.py – Database model definitions for the Top 10 Movies app.
+"from flask_sqlalchemy import SQLAlchemy
 
-Defines the SQLAlchemy database instance and Movie model.
-"""
-
-from flask_sqlalchemy import SQLAlchemy
-
-# Create SQLAlchemy instance (init_app will be used in app.py)
 db = SQLAlchemy()
 
 class Movie(db.Model):
-    """
-    Movie model representing a single movie entry in the database.
-    """
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     year = db.Column(db.String(4), nullable=True)
